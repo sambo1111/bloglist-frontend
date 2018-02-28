@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 class BlogToggle extends React.Component {
     constructor(props) {
@@ -8,10 +9,16 @@ class BlogToggle extends React.Component {
         }
     }
 
+    static propTypes = {
+        handleDeleteBlogButton: PropTypes.func.isRequired,
+        user: PropTypes.object.isRequired,
+        blog: PropTypes.object.isRequired,
+        handleLikeButton: PropTypes.func.isRequired
+    }
+
     toggleVisibility = () => {
         this.setState({ visible: !this.state.visible })
     }
-
 
 
     render() {
@@ -26,22 +33,50 @@ class BlogToggle extends React.Component {
             marginBottom: 5
         }
 
+        const deleteButton = () => {
+            if (!this.props.blog.user) {
+                return (
+                    <div> <button onClick={async () => this.props.handleDeleteBlogButton(this.props.blog._id)}> delete </button> </div>
+                )
+            } else {
+                if (this.props.blog.user.username === this.props.user.username) {
+                    return (
+                        <div> <button onClick={async () => this.props.handleDeleteBlogButton(this.props.blog._id)}> delete </button> </div>
+                    )
+                }
+            }
+            return (
+                null
+            )
+        }
+
+        const showPoster = () => {
+            if (this.props.blog.user) {
+                return (
+                    <div> Added by: {this.props.blog.user.username} </div>
+                )
+            }
+            return (
+                null
+            )
+        }
+
         return (
             <div>
                 <div style={blogStyle} >
-                    <div style={hideWhenVisible}>
+                    <div className ="nameDiv" style={hideWhenVisible}>
                         <div onClick={this.toggleVisibility}>{this.props.blog.title} {this.props.blog.author}</div>
                     </div>
 
-                    <div style={showWhenVisible}>
+                    <div className="contentDiv" style={showWhenVisible}>
                         <div onClick={this.toggleVisibility}>{this.props.blog.title} {this.props.blog.author}</div>
                         <div> {this.props.blog.url} </div>
-                        <div> 
+                        <div>
                             {this.props.blog.likes}
                             <button onClick={async () => this.props.handleLikeButton(this.props.blog._id)}> like </button>
                         </div>
-                        <div> Added by: {this.props.blog.user.username} </div>
-                        <div> <button onClick={async () => this.props.handleDeleteBlogButton(this.props.blog._id)}> delete </button> </div>
+                        {showPoster()}
+                        {deleteButton()}
                     </div>
                 </div>
             </div>

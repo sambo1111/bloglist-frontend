@@ -123,6 +123,7 @@ class App extends React.Component {
       <div>
         {this.state.blogs.map(blog =>
           <BlogToggle key={blog._id}
+            user={this.state.user}
             blog={blog}
             handleDeleteBlogButton={this.handleDeleteBlogButton}
             handleLikeButton={this.handleLikeButton} />)}
